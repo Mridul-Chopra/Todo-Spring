@@ -34,6 +34,7 @@ public class OperationsServiceImpl  implements OperationService{
 //		db.flush();
 //		db.save(todo);
 		db.save(todo);
+		db.flush();
 		
 	}
 
