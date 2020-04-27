@@ -30,6 +30,8 @@
 		console.log(item);
 		document.getElementById("myInput").value = "";
 		
+		if(item=="") return;
+		
 		let payload = {item: item , status:0};
 		
 		$.ajax({
@@ -47,6 +49,35 @@
 	});
 	
 	
+	
+	$("#myUL").on('click','li',function(){
+		
+		let item = $(this).text();
+		item = item.substr(0,item.length-1);
+		
+		let className = $(this).attr('class');
+		let status = className=="checked" ? 1 : 0;
+		let payload = {item:item , status:status};
+		console.log(payload);
+		
+		$.ajax({
+			
+			url:'/add',
+			type:'POST',
+			contentType:"application/json; charset=utf-8",
+			data:JSON.stringify(payload),
+			success: function(result)
+					{
+						console.log(result);
+					}
+		});
+	});
+	
+	
+	
+	
+	
+	
 	$.ajax({
 		
 		url:'/get',
@@ -54,10 +85,11 @@
 		success: function (result)
 				{
 					console.log(result);
-					result.forEach( (item)=>{
-						
-						newElement(item);
-					});
+					for(key in result)
+					{
+						console.log(`${key}: ${result[key]}`);
+						newElement(`${key}` , `${result[key]}`);
+					}
 					
 				}
 		
@@ -67,8 +99,14 @@
 	
 	
 	
-	function newElement(item) {
+	function newElement(item , status) {
 		var li = document.createElement("li");
+		
+		if(status==="true")
+		{
+			li.className="checked";
+		}
+		
 		var inputValue = item
 		var t = document.createTextNode(inputValue);
 		li.appendChild(t);

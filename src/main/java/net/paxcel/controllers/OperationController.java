@@ -39,9 +39,11 @@ public class OperationController {
 	}
 	
 	@GetMapping("/get")
-	public List<String> get(HttpServletRequest request)
+	public Map<String,Boolean> get(HttpServletRequest request)
 	{
 		String username = (String) request.getSession().getAttribute("username");
 		return operation.getTodos(username);
 	}
+	
+
 }

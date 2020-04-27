@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public interface OperationService {
 	
 	public void addItem(String username , String payload);
-	public List<String> getTodos(String username);
+	public Map<String,Boolean> getTodos(String username);
 	public void delete(String payload , String username);
 
 }

@@ -13,31 +13,33 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-//	@Autowired
-//    UserDetailsService userDetailsService;
+	
+	@Autowired DataSource dataSource;
 	
 	
-//	@Autowired DataSource datasource;
-//	
-//	
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//    	
-//    	
-//    	//        auth.userDetailsService(userDetailsService);
-//    	
-//    	auth.jdbcAuthentication()
-//    		.dataSource(datasource)
-//    		.usersByUsernameQuery("Select username,password,enabled from users where username = ?")
-//    		.authoritiesByUsernameQuery("Select username,authority from authorities where username = ?");
-//    }
-	
+	@Autowired
+	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+
+	  auth.jdbcAuthentication().dataSource(dataSource)
+		.usersByUsernameQuery(
+			"select username,password, enabled from users where username=?")
+		.authoritiesByUsernameQuery(
+			"select username, authority from authorities where username=?")
+		.passwordEncoder(NoOpPasswordEncoder.getInstance()) ;
+	}
+
+ 
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -48,24 +50,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.formLogin()
 				.loginPage("/login")
 				.defaultSuccessUrl("/user", true)
+				.failureUrl("/login?error")
+				.usernameParameter("username").passwordParameter("password")
 				.permitAll()
 				.and()
 			.logout()
 				.permitAll()
 			.and()
 				.csrf().disable();
+		
+
+		
 	}
 
-	@Bean
-	@Override
-	public UserDetailsService userDetailsService() {
-		UserDetails user =
-			 User.withDefaultPasswordEncoder()
-				.username("user")
-				.password("123")
-				.roles("USER")
-				.build();
-
-		return new InMemoryUserDetailsManager(user);
-	}
+	
 }

@@ -3,7 +3,6 @@ package net.paxcel.dao;
 import java.util.List;
 
 import javax.transaction.Transactional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -17,4 +16,5 @@ public interface TodoRepository extends JpaRepository<TodoModel,TodoCompositeKey
 		
 		@Transactional
 		public void deleteItemByUsernameAndItem( String username , String item  );
+		
 }

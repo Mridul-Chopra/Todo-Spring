@@ -21,33 +21,25 @@ public class OperationsServiceImpl  implements OperationService{
 	
 	@Override
 	public void addItem(String username, String payload) {
-		
-		
 		JSONObject data = new JSONObject(payload);
-		
 		String item = data.getString("item");
 		Boolean isDone = data.getInt("status")==1?true:false;
-		
 		TodoModel todo = new TodoModel(username,item,isDone);
 		System.out.println(todo.toString());
-		
-//		db.flush();
-//		db.save(todo);
 		db.save(todo);
 		db.flush();
-		
 	}
 
 
 	@Override
-	public List<String> getTodos(String username) {
+	public Map<String,Boolean> getTodos(String username) {
 		
 		List<TodoModel> data = db.findByUsername(username);
-		List<String> todos = new ArrayList<String>();
+		Map<String,Boolean> todos = new HashMap<String,Boolean>();
 		
 		data.forEach( 
 						(x)->{
-								todos.add(x.getItem());
+								todos.put(x.getItem(),x.getIsDone());
 							}
 					);
 		
@@ -64,5 +56,8 @@ public class OperationsServiceImpl  implements OperationService{
 		db.deleteItemByUsernameAndItem(username , item);
 		
 	}
+
+
+
 
 }
